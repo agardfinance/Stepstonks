@@ -1,0 +1,26 @@
+# Gradle build outputs and caches
+.gradle/
+build/
+app/build/
+**/build/
+
+# Local configuration files
+local.properties
+*.local.properties
+
+# Android Studio / IDE
+.idea/
+*.iml
+*.iws
+*.ipr
+.DS_Store
+
+# Keystore files
+*.jks
+*.keystore
+
+# Generated files
+app/src/main/assets/
+
+# Test results
+app/src/androidTest/
