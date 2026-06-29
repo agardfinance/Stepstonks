@@ -3,10 +3,7 @@ package com.stepstonks.app.presentation.screens.onboarding
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.pager.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -19,7 +16,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.*
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.stepstonks.app.presentation.theme.*
-import kotlinx.coroutines.launch
 
 data class OnboardingPage(
     val emoji: String,
@@ -37,14 +33,14 @@ val ONBOARDING_PAGES = listOf(
     OnboardingPage("💎", "Your Wallet", "Withdraw real earnings", "Your STK tokens have real value. Hold, stake, or withdraw to your crypto wallet. Your legs = your bank!", NeonBlue),
 )
 
-@OptIn(ExperimentalFoundationApi::class)
+private val totalPages = ONBOARDING_PAGES.size + 1
+
 @Composable
 fun OnboardingScreen(
     onComplete: () -> Unit,
     viewModel: OnboardingViewModel = hiltViewModel()
 ) {
-    val pagerState = rememberPagerState { ONBOARDING_PAGES.size + 1 }
-    val scope = rememberCoroutineScope()
+    var currentPage by remember { mutableIntStateOf(0) }
     val isLoading by viewModel.isLoading.collectAsState()
     val error by viewModel.error.collectAsState()
     var username by remember { mutableStateOf("") }
@@ -54,13 +50,20 @@ fun OnboardingScreen(
             .fillMaxSize()
             .background(DarkBackground)
     ) {
-        HorizontalPager(
-            state = pagerState,
-            modifier = Modifier.fillMaxSize()
+        AnimatedContent(
+            targetState = currentPage,
+            transitionSpec = {
+                if (targetState > initialState) {
+                    slideInHorizontally { it } + fadeIn() togetherWith slideOutHorizontally { -it } + fadeOut()
+                } else {
+                    slideInHorizontally { -it } + fadeIn() togetherWith slideOutHorizontally { it } + fadeOut()
+                }
+            },
+            modifier = Modifier.fillMaxSize(),
+            label = "onboarding_page"
         ) { page ->
             if (page < ONBOARDING_PAGES.size) {
-                val pageData = ONBOARDING_PAGES[page]
-                OnboardingPageContent(pageData)
+                OnboardingPageContent(ONBOARDING_PAGES[page])
             } else {
                 CreateAccountPage(
                     username = username,
@@ -71,6 +74,7 @@ fun OnboardingScreen(
                 )
             }
         }
+
         Column(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -78,8 +82,8 @@ fun OnboardingScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                repeat(ONBOARDING_PAGES.size + 1) { i ->
-                    val isSelected = pagerState.currentPage == i
+                repeat(totalPages) { i ->
+                    val isSelected = currentPage == i
                     Box(
                         Modifier
                             .size(if (isSelected) 24.dp else 8.dp, 8.dp)
@@ -91,9 +95,9 @@ fun OnboardingScreen(
                 }
             }
             Spacer(Modifier.height(24.dp))
-            if (pagerState.currentPage < ONBOARDING_PAGES.size) {
+            if (currentPage < ONBOARDING_PAGES.size) {
                 Button(
-                    onClick = { scope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) } },
+                    onClick = { currentPage++ },
                     modifier = Modifier.fillMaxWidth().height(56.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = NeonGreen),
                     shape = RoundedCornerShape(16.dp)
@@ -101,7 +105,7 @@ fun OnboardingScreen(
                     Text("Next", color = DarkBackground, fontWeight = FontWeight.Bold, fontSize = 16.sp)
                 }
                 Spacer(Modifier.height(8.dp))
-                TextButton(onClick = { scope.launch { pagerState.animateScrollToPage(ONBOARDING_PAGES.size) } }) {
+                TextButton(onClick = { currentPage = ONBOARDING_PAGES.size }) {
                     Text("Skip", color = TextMuted)
                 }
             }

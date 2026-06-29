@@ -69,7 +69,7 @@ fun AnimatedCircularProgress(
                     sweepAngle = 360f * animatedProgress,
                     useCenter = false,
                     topLeft = topLeft - Offset(4f, 4f),
-                    size = arcSize + Size(8f, 8f),
+                    size = Size(arcSize.width + 8f, arcSize.height + 8f),
                     style = Stroke(strokePx + 8f, cap = StrokeCap.Round)
                 )
             }

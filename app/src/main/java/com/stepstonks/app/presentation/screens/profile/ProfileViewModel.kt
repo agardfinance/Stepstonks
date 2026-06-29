@@ -6,6 +6,7 @@ import com.stepstonks.app.domain.model.*
 import com.stepstonks.app.domain.repository.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class ProfileUiState(

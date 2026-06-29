@@ -7,6 +7,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.material3.*
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -77,9 +78,11 @@ fun ChallengesScreen(
                 containerColor = DarkSurface,
                 contentColor = NeonGreen,
                 indicator = { tabPositions ->
-                    TabRowDefaults.SecondaryIndicator(
-                        modifier = Modifier.tabIndicatorOffset(tabPositions[selectedTab]),
-                        color = NeonGreen
+                    Box(
+                        Modifier
+                            .tabIndicatorOffset(tabPositions[selectedTab])
+                            .height(2.dp)
+                            .background(NeonGreen)
                     )
                 }
             ) {
