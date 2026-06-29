@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Stepstonks</string>
+    <string name="channel_step_counter">Step Counter</string>
+    <string name="channel_step_counter_desc">Tracks your steps in the background to earn STEPSTONKS tokens</string>
+    <string name="notification_step_tracking_title">Stepstonks is tracking your steps</string>
+    <string name="notification_step_tracking_text">Keep walking to earn STK tokens!</string>
+</resources>
