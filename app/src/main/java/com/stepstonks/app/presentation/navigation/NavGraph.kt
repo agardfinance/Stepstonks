@@ -1,6 +1,7 @@
 package com.stepstonks.app.presentation.navigation
 
 import androidx.compose.animation.*
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -9,13 +10,12 @@ import androidx.compose.material3.*
 import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.*
 import com.stepstonks.app.presentation.screens.achievements.AchievementsScreen
 import com.stepstonks.app.presentation.screens.challenges.ChallengesScreen
+import com.stepstonks.app.presentation.screens.community.CommunityScreen
 import com.stepstonks.app.presentation.screens.home.HomeScreen
 import com.stepstonks.app.presentation.screens.leaderboard.LeaderboardScreen
 import com.stepstonks.app.presentation.screens.onboarding.OnboardingScreen
@@ -32,7 +32,7 @@ val bottomNavItems = listOf(
     NavItem("Home", Icons.Filled.Home, Screen.Home),
     NavItem("Walk", Icons.Filled.DirectionsWalk, Screen.Walk),
     NavItem("Challenges", Icons.Filled.EmojiEvents, Screen.Challenges),
-    NavItem("Leaderboard", Icons.Filled.Leaderboard, Screen.Leaderboard),
+    NavItem("Community", Icons.Filled.Forum, Screen.Community),
     NavItem("Profile", Icons.Filled.Person, Screen.Profile),
 )
 
@@ -51,11 +51,18 @@ fun StepstonksNavGraph(startDestination: String = Screen.Splash.route) {
             if (showBottomBar) {
                 NavigationBar(
                     containerColor = DarkCard,
-                    contentColor = NeonGreen,
                     tonalElevation = 0.dp
                 ) {
                     bottomNavItems.forEach { item ->
                         val selected = currentRoute == item.screen.route
+                        val itemColor = when (item.screen) {
+                            Screen.Home -> NeonGreen
+                            Screen.Walk -> ElectricPurple
+                            Screen.Challenges -> GoldYellow
+                            Screen.Community -> NeonBlue
+                            Screen.Profile -> NeonOrange
+                            else -> NeonGreen
+                        }
                         NavigationBarItem(
                             selected = selected,
                             onClick = {
@@ -65,16 +72,14 @@ fun StepstonksNavGraph(startDestination: String = Screen.Splash.route) {
                                     restoreState = true
                                 }
                             },
-                            icon = {
-                                Icon(item.icon, contentDescription = item.label)
-                            },
-                            label = { Text(item.label) },
+                            icon = { Icon(item.icon, contentDescription = item.label) },
+                            label = { Text(item.label, fontSize = androidx.compose.ui.unit.TextUnit(10f, androidx.compose.ui.unit.TextUnitType.Sp)) },
                             colors = NavigationBarItemDefaults.colors(
-                                selectedIconColor = NeonGreen,
-                                selectedTextColor = NeonGreen,
+                                selectedIconColor = itemColor,
+                                selectedTextColor = itemColor,
                                 unselectedIconColor = TextMuted,
                                 unselectedTextColor = TextMuted,
-                                indicatorColor = DarkCardElevated
+                                indicatorColor = itemColor.copy(0.15f)
                             )
                         )
                     }
@@ -119,7 +124,8 @@ fun StepstonksNavGraph(startDestination: String = Screen.Splash.route) {
                     onNavigateToWalk = { navController.navigate(Screen.Walk.route) },
                     onNavigateToChallenges = { navController.navigate(Screen.Challenges.route) },
                     onNavigateToWallet = { navController.navigate(Screen.Wallet.route) },
-                    onNavigateToSneakers = { navController.navigate(Screen.Sneakers.route) }
+                    onNavigateToSneakers = { navController.navigate(Screen.Sneakers.route) },
+                    onNavigateToCommunity = { navController.navigate(Screen.Community.route) }
                 )
             }
             composable(Screen.Walk.route) { WalkScreen() }
@@ -130,6 +136,7 @@ fun StepstonksNavGraph(startDestination: String = Screen.Splash.route) {
             }
             composable(Screen.Achievements.route) { AchievementsScreen() }
             composable(Screen.Leaderboard.route) { LeaderboardScreen() }
+            composable(Screen.Community.route) { CommunityScreen() }
             composable(Screen.Wallet.route) { WalletScreen() }
             composable(Screen.Profile.route) {
                 ProfileScreen(

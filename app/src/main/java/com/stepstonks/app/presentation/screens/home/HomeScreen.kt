@@ -27,6 +27,7 @@ fun HomeScreen(
     onNavigateToChallenges: () -> Unit,
     onNavigateToWallet: () -> Unit,
     onNavigateToSneakers: () -> Unit,
+    onNavigateToCommunity: () -> Unit = {},
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -200,6 +201,14 @@ fun HomeScreen(
                     modifier = Modifier.weight(1f)
                 )
             }
+            Spacer(Modifier.height(12.dp))
+            ActionButton(
+                emoji = "💬",
+                label = "Community — Chat & Forum",
+                color = NeonBlue,
+                onClick = onNavigateToCommunity,
+                modifier = Modifier.fillMaxWidth()
+            )
 
             Spacer(Modifier.height(32.dp))
         }
